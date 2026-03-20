@@ -13,12 +13,11 @@ public interface PostRepository extends BaseRepository<Post> {
     List<Post> findByUserId(Long userId);
 
     @Query("""
-     SELECT p
-     FROM Post p
-     JOIN Follow f
-     ON p.user.id = f.following.id
-     WHERE f.follower.id = :userId
-     ORDER BY p.createdAt DESC
-     """)
+    SELECT p FROM Post p
+    JOIN FETCH p.user
+    JOIN Follow f ON p.user.id = f.following.id
+    WHERE f.follower.id = :userId
+    ORDER BY p.createdAt DESC
+    """)
     Page<Post> getFeed(Long userId, Pageable pageable);
 }
